@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components/native';
 import { graphql } from 'react-apollo';
 
-import FeedCard from '../components/FeedCard';
+import FeedCard from '../components/FeedCard/FeedCard';
 import Loading from '../components/Loading';
 import GET_TWEETS_QUERY from '../graphql/queries/getTweets';
 

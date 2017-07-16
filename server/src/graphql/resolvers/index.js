@@ -8,4 +8,7 @@ export default {
   Query: {
     getTweets: TweetResolvers.getTweets,
   },
+  Mutation: {
+    favoriteTweet: TweetResolvers.favoriteTweet,
+  },
 };

@@ -36,12 +36,12 @@ app.use(
   }),
 );
 
-mock().then(() => {
+// mock().then(() => {
   app.listen(PORT, err => {
     if (err) {
       console.error(err);
     } else {
-      console.log(`App listen on port: ${PORT}`);
+      console.log(`Graphiql listen on: http://localhost:${PORT}/graphiql`);
     }
   });
-});
+// });

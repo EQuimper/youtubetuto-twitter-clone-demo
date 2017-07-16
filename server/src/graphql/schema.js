@@ -5,6 +5,7 @@ export default`
     updatedAt: String
     createdAt: String
     user: User
+    favorite_count: Int
   }
 
   type User {
@@ -19,5 +20,9 @@ export default`
 
   type Query {
     getTweets: [Tweet]
+  }
+
+  type Mutation {
+    favoriteTweet(_id: String!): Tweet
   }
 `;

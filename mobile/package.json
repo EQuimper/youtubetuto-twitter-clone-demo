@@ -13,5 +13,9 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-18.0.1.tar.gz",
     "react-navigation": "^1.0.0-beta.11",
     "styled-components": "^2.1.1"
+  },
+  "devDependencies": {
+    "eslint": "^4.2.0",
+    "eslint-config-equimper": "^2.2.1"
   }
 }

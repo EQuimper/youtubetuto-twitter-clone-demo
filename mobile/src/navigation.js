@@ -8,13 +8,15 @@ import NotificationsScreen from './screens/NotificationsScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import { colors } from './utils/constants';
 
+const TAB_ICON_SIZE = 20;
+
 const Tabs = TabNavigator({
   Home: {
     screen: HomeScreen,
     navigationOptions: () => ({
       tabBarIcon: ({ tintColor }) =>
         <FontAwesome
-          size={25}
+          size={TAB_ICON_SIZE}
           color={tintColor}
           name="home"
         />,
@@ -25,7 +27,7 @@ const Tabs = TabNavigator({
     navigationOptions: () => ({
       tabBarIcon: ({ tintColor }) =>
         <FontAwesome
-          size={25}
+          size={TAB_ICON_SIZE}
           color={tintColor}
           name="search"
         />,
@@ -36,7 +38,7 @@ const Tabs = TabNavigator({
     navigationOptions: () => ({
       tabBarIcon: ({ tintColor }) =>
         <FontAwesome
-          size={25}
+          size={TAB_ICON_SIZE}
           color={tintColor}
           name="bell"
         />,
@@ -47,7 +49,7 @@ const Tabs = TabNavigator({
     navigationOptions: () => ({
       tabBarIcon: ({ tintColor }) =>
         <FontAwesome
-          size={25}
+          size={TAB_ICON_SIZE}
           color={tintColor}
           name="user"
         />,
@@ -70,7 +72,8 @@ const Tabs = TabNavigator({
         width: 0,
         height: 1
       },
-      shadowRadius: 4
+      shadowRadius: 4,
+      paddingVertical: 5,
     },
   },
 })

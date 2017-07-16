@@ -1,12 +1,15 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import Touchable from '@appandflow/touchable';
-import { Ionicons, Entypo } from '@expo/vector-icons';
+import { Entypo, SimpleLineIcons } from '@expo/vector-icons';
+import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
 
 import { colors } from '../utils/constants';
 
+const ICON_FONT_SIZE = 20;
+
 const Card = styled.View`
-  minHeight: 225;
+  minHeight: 180;
   backgroundColor: ${props => props.theme.WHITE};
   width: 95%;
   shadowColor: ${props => props.theme.SECONDARY};
@@ -14,7 +17,7 @@ const Card = styled.View`
   shadowOpacity: 0.1;
   shadowOffset: 0px 2px;
   marginVertical: 5;
-  padding: 5px;
+  padding: 7px;
 `;
 
 const CardHeader = styled.View`
@@ -24,7 +27,7 @@ const CardHeader = styled.View`
 `;
 
 const CardAvatarContainer = styled.View`
-  flex: 0.3;
+  flex: 0.2;
 `;
 
 const CardAvatar = styled.Image`
@@ -40,7 +43,7 @@ const CardMetaContainer = styled.View`
 const CardMetaTopContainer = styled.View`
   flex: 1;
   flexDirection: row;
-  justifyContent: space-between;
+  justifyContent: flex-start;
   alignItems: center;
 `;
 
@@ -60,14 +63,6 @@ const CardMetaText = styled.Text`
   fontSize: 14;
   fontWeight: 600;
   color: ${props => props.theme.LIGHT_GRAY};
-`;
-
-const CardButton = styled(Touchable) `
-  flex: 0.3;
-  alignSelf: stretch;
-  justifyContent: flex-start;
-  alignItems: flex-end;
-  paddingRight: 8;
 `;
 
 const CardContentContainer = styled.View`
@@ -90,7 +85,7 @@ const CardBottomContainer = styled.View`
 `;
 
 const CardBottomButton = styled(Touchable).attrs({
-  feedback: 'opacity'
+  feedback: 'opacity',
 }) `
   flex: 1;
   justifyContent: space-around;
@@ -105,7 +100,7 @@ const CardBottomButtonText = styled.Text`
   fontWeight: 500;
 `;
 
-export default function FeedCard({ avatar, first_name, last_name, username }) {
+export default function FeedCard({ text, createdAt, user: { avatar, first_name, last_name, username } }) {
   return (
     <Card>
       <CardHeader>
@@ -117,39 +112,36 @@ export default function FeedCard({ avatar, first_name, last_name, username }) {
             <CardMetaFullName>
               {first_name} {last_name}
             </CardMetaFullName>
-            <CardMetaText>
+            <CardMetaText style={{ marginLeft: 5 }}>
               @{username}
             </CardMetaText>
           </CardMetaTopContainer>
           <CardMetaBottomContainer>
             <CardMetaText>
-              4m
+              {distanceInWordsToNow(createdAt)}
             </CardMetaText>
           </CardMetaBottomContainer>
         </CardMetaContainer>
-        <CardButton feedback="opacity">
-          <Ionicons name="ios-arrow-down" size={25} color={colors.LIGHT_GRAY} />
-        </CardButton>
       </CardHeader>
       <CardContentContainer>
         <CardContentText>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Recusandae quod, dolor nostrum numquam velit quaerat, assumenda odit veritatis rerum officia omnis vero explicabo quo vel excepturi alias error qui voluptate.
+          {text}
         </CardContentText>
       </CardContentContainer>
       <CardBottomContainer>
         <CardBottomButton>
-          <Entypo name="reply" size={20} color={colors.LIGHT_GRAY} />
+          <SimpleLineIcons name="bubble" size={ICON_FONT_SIZE} color={colors.LIGHT_GRAY} />
           <CardBottomButtonText>3</CardBottomButtonText>
         </CardBottomButton>
         <CardBottomButton>
-          <Entypo name="retweet" size={20} color={colors.LIGHT_GRAY} />
+          <Entypo name="retweet" size={ICON_FONT_SIZE} color={colors.LIGHT_GRAY} />
           <CardBottomButtonText>10</CardBottomButtonText>
         </CardBottomButton>
         <CardBottomButton>
-          <Entypo name="heart" size={20} color={colors.LIGHT_GRAY} />
+          <Entypo name="heart" size={ICON_FONT_SIZE} color={colors.LIGHT_GRAY} />
           <CardBottomButtonText>25</CardBottomButtonText>
         </CardBottomButton>
       </CardBottomContainer>
     </Card>
-  )
+  );
 }

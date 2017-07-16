@@ -1,5 +1,5 @@
 import Tweet from '../../models/tweet';
 
 export default {
-  getTweets: (_, args) => Tweet.find({}),
+  getTweets: () => Tweet.find({}).sort({ createdAt: -1 }),
 };

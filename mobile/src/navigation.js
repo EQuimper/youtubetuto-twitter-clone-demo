@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { addNavigationHelpers, StackNavigator, TabNavigator } from 'react-navigation';
 import { FontAwesome } from '@expo/vector-icons';
+import { connect } from 'react-redux';
 
 import HomeScreen from './screens/HomeScreen';
 import ExploreScreen from './screens/ExploreScreen';
@@ -78,7 +79,7 @@ const Tabs = TabNavigator({
   },
 })
 
-export default StackNavigator({
+const AppMainNav = StackNavigator({
   Home: {
     screen: Tabs,
   },
@@ -98,4 +99,23 @@ export default StackNavigator({
       shadowRadius: 4
     }
   }
-})
+});
+
+class AppNavigator extends Component {
+  state = {  }
+  render() {
+    const nav = addNavigationHelpers({
+      dispatch: this.props.dispatch,
+      state: this.props.nav,
+    });
+    return (
+      <AppMainNav navigation={nav} />
+    );
+  }
+}
+
+export default connect(state => ({
+  nav: state.nav,
+}))(AppNavigator);
+
+export const router = AppMainNav.router;

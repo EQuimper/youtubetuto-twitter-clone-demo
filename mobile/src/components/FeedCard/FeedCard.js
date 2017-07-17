@@ -32,9 +32,6 @@ const CardContentText = styled.Text`
 
 class FeedCard extends Component {
   render() {
-    console.log('====================================');
-    console.log('FEED', this.props);
-    console.log('====================================');
     const { text, createdAt, favorite_count, user, isFavorited } = this.props;
     return (
       <Card>

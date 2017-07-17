@@ -30,6 +30,7 @@ export default `
 
   type Mutation {
     signup(fullName: String!, email: String!, password: String!, username: String!): Auth
+    createTweet(text: String!): Tweet
     favoriteTweet(_id: String!): Tweet
   }
 `;

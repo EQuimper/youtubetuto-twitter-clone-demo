@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components/native';
 import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
 
+import { fakeAvatar } from '../../utils/constants';
+
 const CardHeader = styled.View`
   height: 50;
   flexDirection: row;
@@ -51,7 +53,7 @@ export default function FeedCardHeader({ avatar, first_name, last_name, createdA
   return (
     <CardHeader>
       <CardAvatarContainer>
-        <CardAvatar source={{ uri: avatar }} />
+        <CardAvatar source={{ uri: avatar || fakeAvatar }} />
       </CardAvatarContainer>
       <CardMetaContainer>
         <CardMetaTopContainer>

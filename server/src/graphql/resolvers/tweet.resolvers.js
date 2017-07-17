@@ -45,4 +45,5 @@ export default {
       ...tweet.toJSON()
     }
   },
+  createTweet: (_, { text }, { user }) => Tweet.create({ text, user: user._id })
 };

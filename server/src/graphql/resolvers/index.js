@@ -11,6 +11,7 @@ export default {
   },
   Mutation: {
     signup: UserResolvers.signup,
+    createTweet: TweetResolvers.createTweet,
     favoriteTweet: TweetResolvers.favoriteTweet,
   },
 };

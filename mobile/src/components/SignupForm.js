@@ -7,7 +7,7 @@ import Touchable from '@appandflow/touchable';
 import { graphql } from 'react-apollo';
 import { connect } from 'react-redux';
 
-import { colors } from '../utils/constants';
+import { colors, fakeAvatar } from '../utils/constants';
 import SIGNUP_MUTATION from '../graphql/mutations/signup';
 import Loading from '../components/Loading';
 import { login } from '../actions/user';
@@ -114,7 +114,7 @@ class SignupForm extends Component {
     this.setState({ loading: true });
     const { fullName, email, password, username } = this.state;
     const { data } = await this.props.mutate({
-      variables: { fullName, email, password, username },
+      variables: { fullName, email, password, username, avatar: fakeAvatar },
     });
     this.setState({ loading: false });
     try {

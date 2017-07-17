@@ -29,8 +29,19 @@ export default `
   }
 
   type Mutation {
-    signup(fullName: String!, email: String!, password: String!, username: String!): Auth
+    signup(fullName: String!, email: String!, password: String!, username: String!, avatar: String!): Auth
     createTweet(text: String!): Tweet
     favoriteTweet(_id: String!): Tweet
+  }
+
+  type Subscription {
+    tweetAdded: Tweet
+    tweetFavorited: Tweet
+  }
+
+  schema {
+    query: Query
+    mutation: Mutation
+    subscription: Subscription
   }
 `;

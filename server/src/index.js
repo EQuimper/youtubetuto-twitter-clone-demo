@@ -4,7 +4,10 @@ import express from 'express';
 import { graphiqlExpress, graphqlExpress } from 'graphql-server-express';
 import { makeExecutableSchema } from 'graphql-tools';
 import bodyParser from 'body-parser';
+import { createServer } from 'http';
+import { SubscriptionServer } from 'subscriptions-transport-ws';
 import jwt from 'jsonwebtoken';
+import { execute, subscribe } from 'graphql';
 
 import './config/db';
 import config from './config/config';
@@ -16,8 +19,6 @@ const schema = makeExecutableSchema({
   typeDefs,
   resolvers,
 });
-
-const PORT = 3000;
 
 const app = express();
 
@@ -38,12 +39,13 @@ app.use(async (req, res, next) => {
 app.use(
   '/graphiql',
   graphiqlExpress({
-    endpointURL: '/graphql',
+    endpointURL: config.GRAPHQL_PATH,
+    // subscriptionsEndpoint: `ws://localhost:${config.PORT}${config.SUBSCRIPTIONS_PATH}`,
   }),
 );
 
 app.use(
-  '/graphql',
+  config.GRAPHQL_PATH,
   graphqlExpress(req => ({
     schema,
     context: {
@@ -52,12 +54,22 @@ app.use(
   })),
 );
 
+const graphQLServer = createServer(app);
+
 // mock().then(() => {
-app.listen(PORT, err => {
+graphQLServer.listen(config.PORT, err => {
   if (err) {
     console.error(err);
   } else {
-    console.log(`Graphiql listen on: http://localhost:${PORT}/graphiql`);
+    new SubscriptionServer({
+      schema,
+      execute,
+      subscribe,
+    }, {
+      server: graphQLServer,
+      path: config.SUBSCRIPTIONS_PATH,
+    });
+    console.log(`Graphiql listen on: http://localhost:${config.PORT}/graphiql`);
   }
 });
 // });

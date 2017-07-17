@@ -51,7 +51,7 @@ const TweetButton = styled(Touchable).attrs({
   alignItems: center;
   width: 80;
   height: 40;
-  borderRadius: 10;
+  borderRadius: 20;
   position: absolute;
   top: 60%;
   right: 0;
@@ -59,7 +59,7 @@ const TweetButton = styled(Touchable).attrs({
 
 const TweetButtonText = styled.Text`
   color: ${props => props.theme.WHITE};
-  fontSize: 18;
+  fontSize: 16;
 `;
 
 class NewTweetScreen extends Component {
@@ -87,14 +87,16 @@ class NewTweetScreen extends Component {
           },
           text: this.state.text,
           favorite_count: 0,
-          _id: -1,
+          _id: Math.round(Math.random() * -1000000),
           isFavorited: false,
           createdAt: new Date(),
         },
       },
       update: (store, { data: { createTweet } }) => {
         const data = store.readQuery({ query: GET_TWEETS_QUERY });
-        store.writeQuery({ query: GET_TWEETS_QUERY, data: { getTweets: [{ ...createTweet }, ...data.getTweets] } });
+        if (!data.getTweets.find((tweet) => tweet._id === createTweet._id)) {
+          store.writeQuery({ query: GET_TWEETS_QUERY, data: { getTweets: [{ ...createTweet }, ...data.getTweets] } });
+        }
       },
     });
     Keyboard.dismiss();

@@ -14,4 +14,8 @@ export default {
     createTweet: TweetResolvers.createTweet,
     favoriteTweet: TweetResolvers.favoriteTweet,
   },
+  Subscription: {
+    tweetAdded: TweetResolvers.tweetAdded,
+    tweetFavorited: TweetResolvers.tweetFavorited
+  }
 };

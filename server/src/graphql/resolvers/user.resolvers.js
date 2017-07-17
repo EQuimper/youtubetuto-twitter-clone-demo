@@ -2,10 +2,10 @@ import User from '../../models/user';
 import FavoriteTweet from '../../models/favorite_tweet';
 
 export default {
-  signup: async (_, { fullName, username, password, email }) => {
+  signup: async (_, { fullName, username, password, email, avatar }) => {
     const [first_name, ...last_name] = fullName.split(' ');
 
-    const user = await User.create({ first_name, last_name, username, password, email });
+    const user = await User.create({ first_name, last_name, username, password, email, avatar });
     await FavoriteTweet.create({ user_id: user._id });
 
     return {

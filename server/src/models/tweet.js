@@ -5,7 +5,7 @@ const TweetSchema = new Schema(
     text: {
       type: String,
       minlength: [5, 'Text need to be longer'],
-      maxlength: [144, 'Text cannot be longer than 144'],
+      maxlength: [140, 'Text cannot be longer than 140'],
     },
     user: {
       type: Schema.Types.ObjectId,

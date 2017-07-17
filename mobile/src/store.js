@@ -1,10 +1,16 @@
 import { AsyncStorage } from 'react-native';
 import { createStore } from 'redux';
 import ApolloClient, { createNetworkInterface } from 'apollo-client';
+import { SubscriptionClient, addGraphQLSubscriptions } from 'subscriptions-transport-ws';
 
 import reducers from './reducers';
 
 const networkInterface = createNetworkInterface({ uri: 'http://localhost:3000/graphql' });
+
+const wsClient = new SubscriptionClient('ws://localhost:3000/subscriptions', {
+  reconnect: true,
+  connectionParams: {},
+});
 
 networkInterface.use([{
   async applyMiddleware(req, next) {
@@ -23,8 +29,13 @@ networkInterface.use([{
   },
 }]);
 
-export const client = new ApolloClient({
+const networkInterfaceWithSubscriptions = addGraphQLSubscriptions(
   networkInterface,
+  wsClient,
+);
+
+export const client = new ApolloClient({
+  networkInterface: networkInterfaceWithSubscriptions,
 });
 
 export const store = createStore(

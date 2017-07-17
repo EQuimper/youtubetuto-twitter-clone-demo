@@ -30,7 +30,7 @@ const CardBottomButtonText = styled.Text`
   fontWeight: 500;
 `;
 
-export default function FeedCardBottom({ favorite_count, onFavoritePress }) {
+export default function FeedCardBottom({ favorite_count, onFavoritePress, isFavorited }) {
   return (
     <CardBottomContainer>
       <CardBottomButton>
@@ -42,7 +42,7 @@ export default function FeedCardBottom({ favorite_count, onFavoritePress }) {
         <CardBottomButtonText>10</CardBottomButtonText>
       </CardBottomButton>
       <CardBottomButton onPress={onFavoritePress}>
-        <Entypo name="heart" size={ICON_FONT_SIZE} color={colors.LIGHT_GRAY} />
+        <Entypo name="heart" size={ICON_FONT_SIZE} color={isFavorited ? 'red' : colors.LIGHT_GRAY} />
         <CardBottomButtonText>{favorite_count}</CardBottomButtonText>
       </CardBottomButton>
     </CardBottomContainer>

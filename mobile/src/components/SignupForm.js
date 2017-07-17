@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
 import styled from 'styled-components/native';
-import { Platform } from 'react-native';
+import { Platform, AsyncStorage } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { MaterialIcons } from '@expo/vector-icons';
 import Touchable from '@appandflow/touchable';
+import { graphql } from 'react-apollo';
+import { connect } from 'react-redux';
 
 import { colors } from '../utils/constants';
+import SIGNUP_MUTATION from '../graphql/mutations/signup';
+import Loading from '../components/Loading';
+import { login } from '../actions/user';
 
 const Root = styled.View`
   justifyContent: center;
@@ -91,6 +96,7 @@ class SignupForm extends Component {
     email: '',
     password: '',
     username: '',
+    loading: false,
   }
   _onChangeText = (text, type) => this.setState({ [type]: text });
 
@@ -103,7 +109,30 @@ class SignupForm extends Component {
 
     return false;
   }
+
+  _onSignupPress = async () => {
+    this.setState({ loading: true });
+    const { fullName, email, password, username } = this.state;
+    const { data } = await this.props.mutate({
+      variables: { fullName, email, password, username },
+    });
+    this.setState({ loading: false });
+    try {
+      await AsyncStorage.setItem('@twitterclonedemo:token', data.signup.token);
+      this.props.login(data.signup.token);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   render() {
+    if (this.state.loading) {
+      return (
+        <Root>
+          <Loading />
+        </Root>
+      );
+    }
     return (
       <Root>
         <BackButton onPress={this.props.onBackPress}>
@@ -142,7 +171,7 @@ class SignupForm extends Component {
             />
           </InputWrapper>
         </Wrapper>
-        <ButtonConfirm disabled={this._checkIfDisabled()}>
+        <ButtonConfirm disabled={this._checkIfDisabled()} onPress={this._onSignupPress}>
           <ButtonConfirmText>Sign Up</ButtonConfirmText>
         </ButtonConfirm>
       </Root>
@@ -150,4 +179,6 @@ class SignupForm extends Component {
   }
 }
 
-export default SignupForm;
+const SignupWithGQL = graphql(SIGNUP_MUTATION)(SignupForm);
+
+export default connect(undefined, { login })(SignupWithGQL);

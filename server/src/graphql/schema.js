@@ -6,6 +6,7 @@ export default `
     createdAt: String
     user: User
     favorite_count: Int
+    isFavorited: Boolean
   }
 
   type User {

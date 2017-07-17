@@ -7,6 +7,7 @@ export default gql`
       _id
       createdAt
       favorite_count
+      isFavorited
       user {
         username
         avatar

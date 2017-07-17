@@ -32,7 +32,10 @@ const CardContentText = styled.Text`
 
 class FeedCard extends Component {
   render() {
-    const { text, createdAt, favorite_count, user } = this.props;
+    console.log('====================================');
+    console.log('FEED', this.props);
+    console.log('====================================');
+    const { text, createdAt, favorite_count, user, isFavorited } = this.props;
     return (
       <Card>
         <FeedCardHeader createdAt={createdAt} {...user} />
@@ -42,6 +45,7 @@ class FeedCard extends Component {
           </CardContentText>
         </CardContentContainer>
         <FeedCardBottom
+          isFavorited={isFavorited}
           favorite_count={favorite_count}
           onFavoritePress={this.props.favorite}
         />
@@ -52,13 +56,17 @@ class FeedCard extends Component {
 
 export default graphql(FAVORITE_TWEET_MUTATION, {
   props: ({ ownProps, mutate }) => ({
-    favorite: () => mutate({ variables: { _id: ownProps._id } }),
-    optimisticResponse: {
-      __typename: 'Mutation',
-      favoriteTweet: {
-        __typename: 'Tweet',
-        favorite_count: ownProps.favorite_count + 1,
+    favorite: () => mutate({
+      variables: { _id: ownProps._id },
+      optimisticResponse: {
+        __typename: 'Mutation',
+        favoriteTweet: {
+          __typename: 'Tweet',
+          _id: ownProps._id,
+          favorite_count: ownProps.isFavorited ? ownProps.favorite_count - 1 : ownProps.favorite_count + 1,
+          isFavorited: !ownProps.isFavorited,
+        },
       },
-    },
+    }),
   }),
 })(FeedCard);

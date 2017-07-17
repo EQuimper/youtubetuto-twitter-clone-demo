@@ -64,7 +64,7 @@ export default function FeedCardHeader({ avatar, first_name, last_name, createdA
         </CardMetaTopContainer>
         <CardMetaBottomContainer>
           <CardMetaText>
-            {distanceInWordsToNow(createdAt)}
+            {distanceInWordsToNow(createdAt)} ago
           </CardMetaText>
         </CardMetaBottomContainer>
       </CardMetaContainer>

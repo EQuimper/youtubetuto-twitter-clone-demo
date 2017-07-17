@@ -4,15 +4,18 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "cross-env NODE_ENV=dev nodemon --exec babel-node src/index.js"
+    "dev": "cross-env NODE_ENV=dev nodemon --exec babel-node src/index.js",
+    "prettier": "prettier --single-quote --print-width 80 --trailing-comma all --write 'src/**/*.js'"
   },
   "dependencies": {
+    "bcrypt-nodejs": "^0.0.3",
     "body-parser": "^1.17.2",
     "cross-env": "^5.0.1",
     "express": "^4.15.3",
     "graphql": "^0.10.4",
     "graphql-server-express": "^1.0.0",
     "graphql-tools": "^1.1.0",
+    "jsonwebtoken": "^7.4.1",
     "mongoose": "^4.11.3"
   },
   "devDependencies": {
@@ -22,7 +25,9 @@
     "babel-preset-stage-2": "^6.24.1",
     "eslint": "^4.2.0",
     "eslint-config-equimper": "^2.2.1",
+    "eslint-config-prettier": "^2.3.0",
     "faker": "^4.1.0",
-    "nodemon": "^1.11.0"
+    "nodemon": "^1.11.0",
+    "prettier": "^1.5.3"
   }
 }

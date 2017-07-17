@@ -7,6 +7,7 @@ import HomeScreen from './screens/HomeScreen';
 import ExploreScreen from './screens/ExploreScreen';
 import NotificationsScreen from './screens/NotificationsScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import LoginScreen from './screens/LoginScreen';
 import { colors } from './utils/constants';
 
 const TAB_ICON_SIZE = 20;
@@ -16,44 +17,44 @@ const Tabs = TabNavigator({
     screen: HomeScreen,
     navigationOptions: () => ({
       tabBarIcon: ({ tintColor }) =>
-        <FontAwesome
+        (<FontAwesome
           size={TAB_ICON_SIZE}
           color={tintColor}
           name="home"
-        />,
+        />),
     }),
   },
   Explore: {
     screen: ExploreScreen,
     navigationOptions: () => ({
       tabBarIcon: ({ tintColor }) =>
-        <FontAwesome
+        (<FontAwesome
           size={TAB_ICON_SIZE}
           color={tintColor}
           name="search"
-        />,
+        />),
     }),
   },
   Notifications: {
     screen: NotificationsScreen,
     navigationOptions: () => ({
       tabBarIcon: ({ tintColor }) =>
-        <FontAwesome
+        (<FontAwesome
           size={TAB_ICON_SIZE}
           color={tintColor}
           name="bell"
-        />,
+        />),
     }),
   },
   Profile: {
     screen: ProfileScreen,
     navigationOptions: () => ({
       tabBarIcon: ({ tintColor }) =>
-        <FontAwesome
+        (<FontAwesome
           size={TAB_ICON_SIZE}
           color={tintColor}
           name="user"
-        />,
+        />),
     }),
   },
 }, {
@@ -71,13 +72,13 @@ const Tabs = TabNavigator({
       shadowOpacity: 0.1,
       shadowOffset: {
         width: 0,
-        height: 1
+        height: 1,
       },
       shadowRadius: 4,
       paddingVertical: 5,
     },
   },
-})
+});
 
 const AppMainNav = StackNavigator({
   Home: {
@@ -85,7 +86,7 @@ const AppMainNav = StackNavigator({
   },
 }, {
   cardStyle: {
-    backgroundColor: '#F1F6FA'
+    backgroundColor: '#F1F6FA',
   },
   navigationOptions: {
     headerStyle: {
@@ -94,20 +95,23 @@ const AppMainNav = StackNavigator({
       shadowOpacity: 0.1,
       shadowOffset: {
         width: 0,
-        height: 1
+        height: 1,
       },
-      shadowRadius: 4
-    }
-  }
+      shadowRadius: 4,
+    },
+  },
 });
 
 class AppNavigator extends Component {
-  state = {  }
+  state = { }
   render() {
     const nav = addNavigationHelpers({
       dispatch: this.props.dispatch,
       state: this.props.nav,
     });
+    if (!this.props.isAuthenticated) {
+      return <LoginScreen />;
+    }
     return (
       <AppMainNav navigation={nav} />
     );
@@ -116,6 +120,7 @@ class AppNavigator extends Component {
 
 export default connect(state => ({
   nav: state.nav,
+  isAuthenticated: state.user.isAuthenticated,
 }))(AppNavigator);
 
 export const router = AppMainNav.router;

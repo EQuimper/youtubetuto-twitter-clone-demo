@@ -6,8 +6,8 @@ import { makeExecutableSchema } from 'graphql-tools';
 import bodyParser from 'body-parser';
 
 import './config/db';
+import config from './config/config';
 import mock from './mock';
-
 import typeDefs from './graphql/schema';
 import resolvers from './graphql/resolvers';
 
@@ -33,15 +33,18 @@ app.use(
   '/graphql',
   graphqlExpress({
     schema,
+    context: {
+      JWT_SECRET: config.JWT_SECRET
+    }
   }),
 );
 
-// mock().then(() => {
-  app.listen(PORT, err => {
-    if (err) {
-      console.error(err);
-    } else {
-      console.log(`Graphiql listen on: http://localhost:${PORT}/graphiql`);
-    }
-  });
+// mock().then(() => {e
+app.listen(PORT, err => {
+  if (err) {
+    console.error(err);
+  } else {
+    console.log(`Graphiql listen on: http://localhost:${PORT}/graphiql`);
+  }
+});
 // });

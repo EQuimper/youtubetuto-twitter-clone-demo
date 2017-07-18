@@ -1,5 +1,6 @@
 import User from '../../models/user';
 import FavoriteTweet from '../../models/favorite_tweet';
+import { requireAuth } from '../../services/auth';
 
 export default {
   signup: async (_, { fullName, username, password, email, avatar }) => {
@@ -11,5 +12,23 @@ export default {
     return {
       token: user.createToken()
     };
+  },
+  login: async (_, { email, password }) => {
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new Error('User not exist!');
+    }
+
+    if (!user.authenticateUser(password)) {
+      throw new Error('Password not match!');
+    }
+
+    return {
+      token: user.createToken()
+    }
+  },
+  me: async (_, args, { user }) => {
+    await requireAuth(user);
+    return User.findById(user._id);
   }
 }

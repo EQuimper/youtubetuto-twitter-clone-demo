@@ -9,7 +9,7 @@ import FAVORITE_TWEET_MUTATION from '../../graphql/mutations/favoriteTweet';
 const Card = styled.View`
   minHeight: 180;
   backgroundColor: ${props => props.theme.WHITE};
-  width: 95%;
+  width: 100%;
   shadowColor: ${props => props.theme.SECONDARY};
   shadowRadius: 2;
   shadowOpacity: 0.1;

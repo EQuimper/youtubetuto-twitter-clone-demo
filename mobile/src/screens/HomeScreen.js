@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components/native';
 import { graphql } from 'react-apollo';
+import { FlatList } from 'react-native';
 
 import FeedCard from '../components/FeedCard/FeedCard';
 import Loading from '../components/Loading';
@@ -37,12 +38,6 @@ class HomeScreen extends Component {
     this.props.data.subscribeToMore({
       document: TWEET_FAVORITED_SUBSCRIPTION,
       updateQuery: (prev, { subscriptionData }) => {
-        console.log('====================================');
-        console.log(subscriptionData);
-        console.log('====================================');
-        console.log('====================================');
-        console.log('prev', prev);
-        console.log('====================================');
         if (!subscriptionData.data) {
           return prev;
         }
@@ -64,19 +59,17 @@ class HomeScreen extends Component {
   render() {
     const { data } = this.props;
 
-    console.log('====================================');
-    console.log(data);
-    console.log('====================================');
-
     if (data.loading) {
       return <Loading />;
     }
     return (
-      <Root>
-        {data.getTweets.map(item => (
-          <FeedCard {...item} key={item._id} />
-        ))}
-      </Root>
+      <FlatList
+        style={{ paddingTop: 5 }}
+        contentContainerStyle={{ alignSelf: 'stretch' }}
+        data={data.getTweets}
+        renderItem={({ item }) => <FeedCard {...item} key={item._id} />}
+        keyExtractor={(item) => item._id}
+      />
     );
   }
 }

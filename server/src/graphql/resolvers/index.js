@@ -8,9 +8,11 @@ export default {
   },
   Query: {
     getTweets: TweetResolvers.getTweets,
+    me: UserResolvers.me
   },
   Mutation: {
     signup: UserResolvers.signup,
+    login: UserResolvers.login,
     createTweet: TweetResolvers.createTweet,
     favoriteTweet: TweetResolvers.favoriteTweet,
   },

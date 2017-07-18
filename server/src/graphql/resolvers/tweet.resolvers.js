@@ -1,22 +1,17 @@
 import Tweet from '../../models/tweet';
 import FavoriteTweet from '../../models/favorite_tweet';
 import { pubsub } from '../../config/pubsub';
+import { requireAuth } from '../../services/auth';
 
 const TWEET_ADDED = 'tweetAdded';
 const TWEET_FAVORITED = 'tweetFavorited';
 
 export default {
   getTweets: async (_, args, { user }) => {
-    console.log('====================================');
-    console.log(user);
-    console.log('====================================');
+    await requireAuth(user);
     const p1 = Tweet.find({}).sort({ createdAt: -1 });
     const p2 = FavoriteTweet.findOne({ user_id: user._id });
     const [tweets, favorites] = await Promise.all([p1, p2]);
-
-    console.log('====================================');
-    console.log(favorites);
-    console.log('====================================');
 
     const tweetsToSend = tweets.reduce((arr, tweet) => {
       const tw = tweet.toJSON();
@@ -38,6 +33,7 @@ export default {
     return tweetsToSend;
   },
   favoriteTweet: async (_, { _id }, { user }) => {
+    await requireAuth(user);
     const favorites = await FavoriteTweet.findOne({ user_id: user._id });
     if (favorites.tweets.some(t => t.equals(_id))) {
       const tweet = await Tweet.decFavoriteCount(_id);

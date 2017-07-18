@@ -32,6 +32,10 @@ UserSchema.methods = {
     return hashSync(password);
   },
 
+  authenticateUser(password) {
+    return compareSync(password, this.password);
+  },
+
   createToken() {
     return jwt.sign(
       {

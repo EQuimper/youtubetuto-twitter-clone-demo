@@ -26,12 +26,11 @@ app.use(bodyParser.json());
 
 app.use(async (req, res, next) => {
   const token = req.headers.authorization;
-  console.log('====================================');
-  console.log(token);
-  console.log('====================================');
   if (token != null) {
-    const user = jwt.verify(token, config.JWT_SECRET);
+    const user = await jwt.verify(token, config.JWT_SECRET);
     req.user = user; // eslint-disable-line
+  } else {
+    req.user = null; // eslint-disable-line
   }
   next();
 });
@@ -40,7 +39,7 @@ app.use(
   '/graphiql',
   graphiqlExpress({
     endpointURL: config.GRAPHQL_PATH,
-    // subscriptionsEndpoint: `ws://localhost:${config.PORT}${config.SUBSCRIPTIONS_PATH}`,
+    subscriptionsEndpoint: `ws://localhost:${config.PORT}${config.SUBSCRIPTIONS_PATH}`,
   }),
 );
 
@@ -61,7 +60,7 @@ graphQLServer.listen(config.PORT, err => {
   if (err) {
     console.error(err);
   } else {
-    new SubscriptionServer({
+    new SubscriptionServer({ // eslint-disable-line
       schema,
       execute,
       subscribe,

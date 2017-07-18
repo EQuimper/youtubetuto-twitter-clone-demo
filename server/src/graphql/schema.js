@@ -26,10 +26,12 @@ export default `
 
   type Query {
     getTweets: [Tweet]
+    me: User
   }
 
   type Mutation {
     signup(fullName: String!, email: String!, password: String!, username: String!, avatar: String!): Auth
+    login(email: String!, password: String!): Auth
     createTweet(text: String!): Tweet
     favoriteTweet(_id: String!): Tweet
   }

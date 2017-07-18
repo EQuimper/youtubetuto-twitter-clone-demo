@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { addNavigationHelpers, StackNavigator, TabNavigator } from 'react-navigation';
 import { FontAwesome, SimpleLineIcons, EvilIcons } from '@expo/vector-icons';
 import { Keyboard, ActivityIndicator } from 'react-native';
@@ -30,10 +30,10 @@ const Avatar = styled.Image`
 `;
 
 function AvatarCp(props) {
-  if (props.info) {
-    return <Avatar source={{ uri: props.info.avatar }} />;
+  if (!props.info) {
+    return <ActivityIndicator color={colors.PRIMARY} />;
   }
-  return <ActivityIndicator color={colors.PRIMARY} />;
+  return <Avatar source={{ uri: props.info.avatar }} />;
 }
 
 const AvatarState = connect(state => state.user)(AvatarCp);
@@ -184,8 +184,8 @@ const AppMainNav = StackNavigator({
   }),
 });
 
-class AppNavigator extends Component {
-  componentDidMount() {
+class AppNavigator extends PureComponent {
+  componentWillMount() {
     if (this.props.isAuthenticated) {
       this._getUserInfo();
     }
@@ -193,17 +193,17 @@ class AppNavigator extends Component {
 
   _getUserInfo = async () => {
     const { data } = await this.props.client.query({ query: ME_QUERY });
-    this.props.dispatch(getUserInfo(data.me));
+    return this.props.dispatch(getUserInfo(data.me));
   }
 
   render() {
+    if (!this.props.isAuthenticated) {
+      return <LoginScreen />;
+    }
     const nav = addNavigationHelpers({
       dispatch: this.props.dispatch,
       state: this.props.nav,
     });
-    if (!this.props.isAuthenticated) {
-      return <LoginScreen />;
-    }
     return (
       <Root>
         <LoadingStatusSpinner />

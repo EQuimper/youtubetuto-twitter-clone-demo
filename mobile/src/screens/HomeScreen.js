@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components/native';
-import { graphql, compose } from 'react-apollo';
+import { graphql } from 'react-apollo';
 import { FlatList } from 'react-native';
-import { connect } from 'react-redux';
-import Touchable from '@appandflow/touchable';
 
 import FeedCard from '../components/FeedCard/FeedCard';
 import GET_TWEETS_QUERY from '../graphql/queries/getTweets';
@@ -15,31 +13,10 @@ const Root = styled.View`
   flex: 1;
 `;
 
-const Avatar = styled.Image`
-  height: 30;
-  width: 30;
-  borderRadius: 15;
-`;
-
-const ButtonRight = styled(Touchable).attrs({
-  feedback: 'opacity',
-  hitSlop: { top: 20, bottom: 20, right: 20, left: 20 },
-}) `
-  marginRight: 15;
-  justifyContent: center;
-  alignItems: center;
-`;
-
-const ButtonLeft = styled(Touchable).attrs({
-  feedback: 'opacity',
-  hitSlop: { top: 20, bottom: 20, right: 20, left: 20 },
-}) `
-  marginLeft: 15;
-  justifyContent: center;
-  alignItems: center;
-`;
-
 class HomeScreen extends Component {
+  state = {
+    isRefreshing: false,
+  }
   componentWillMount() {
     this.props.data.subscribeToMore({
       document: TWEET_ADDED_SUBSCRIPTION,
@@ -79,25 +56,18 @@ class HomeScreen extends Component {
     });
   }
 
-  _renderItem = ({ item }) => {
-    console.log('====================================');
-    console.log(item);
-    console.log('====================================');
-    return <FeedCard {...item} key={item._id} />;
-  }
+  _renderItem = ({ item }) => <FeedCard {...item} key={item._id} />
 
-  _renderPlaceholder = ({ item }) => {
-    console.log('====================================');
-    console.log(item);
-    console.log('====================================');
-    return <FeedCard placeholder key={item} isLoaded={this.props.data.loading} />;
-  }
+  _renderPlaceholder = ({ item }) => <FeedCard placeholder key={item} isLoaded={this.props.data.loading} />
+
+  _onRefresh = async () => {
+    this.setState({ isRefreshing: true });
+    this.props.data.refetch();
+    this.setState({ isRefreshing: false });
+  };
 
   render() {
     const { data } = this.props;
-    console.log('====================================');
-    console.log(this.props);
-    console.log('====================================');
     if (data.loading) {
       return (
         <Root>
@@ -117,10 +87,12 @@ class HomeScreen extends Component {
           data={data.getTweets}
           renderItem={this._renderItem}
           keyExtractor={item => item._id}
+          onRefresh={this._onRefresh}
+          refreshing={this.state.isRefreshing}
         />
       </Root>
     );
   }
 }
 
-export default compose(graphql(GET_TWEETS_QUERY), connect(state => state.user))(HomeScreen);
+export default graphql(GET_TWEETS_QUERY)(HomeScreen);

@@ -21,6 +21,19 @@ export default `
     createdAt: String
   }
 
+  type Me {
+    _id: String
+    username: String
+    first_name: String
+    last_name: String
+    email: String
+    avatar: String
+    tweets_number: Int
+    tweets_likes: Int
+    updatedAt: String
+    createdAt: String
+  }
+
   type Auth {
     token: String
   }
@@ -28,7 +41,7 @@ export default `
   type Query {
     getTweets: [Tweet]
     getUserTweets: [Tweet]
-    me: User
+    me: Me
   }
 
   type Mutation {

@@ -29,6 +29,13 @@ export default {
   },
   me: async (_, args, { user }) => {
     await requireAuth(user);
-    return User.findById(user._id);
+    const favorite = await FavoriteTweet.findOne({ user_id: user._id });
+    const me = await User.findById(user._id);
+    const favJson = favorite.toJSON();
+
+    return {
+      ...me.toJSON(),
+      tweets_likes: favJson.tweets.length
+    }
   }
 }

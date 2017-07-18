@@ -8,6 +8,7 @@ export default gql`
       first_name
       last_name
       tweets_number
+      tweets_likes
     }
   }
 `;

@@ -3,6 +3,11 @@ import { AppLoading } from 'expo';
 import { UIManager, AsyncStorage } from 'react-native';
 import { ThemeProvider } from 'styled-components';
 import { ApolloProvider } from 'react-apollo';
+import LoadingStatusSpinner from 'react-native-loading-status-spinner';
+import {
+  ActionSheetProvider,
+} from '@expo/react-native-action-sheet';
+import styled from 'styled-components/native';
 
 import AppNavigator from './src/navigation';
 import { store, client } from './src/store';
@@ -12,6 +17,8 @@ import { colors } from './src/utils/constants';
 if (UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
+
+const Root = styled.View`flex: 1`;
 
 export default class App extends React.Component {
   state = {
@@ -50,7 +57,12 @@ export default class App extends React.Component {
     return (
       <ApolloProvider store={store} client={client}>
         <ThemeProvider theme={colors}>
-          <AppNavigator />
+          <ActionSheetProvider>
+            <Root>
+              <LoadingStatusSpinner />
+              <AppNavigator />
+            </Root>
+          </ActionSheetProvider>
         </ThemeProvider>
       </ApolloProvider>
     );

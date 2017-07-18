@@ -7,11 +7,11 @@ import { SubscriptionClient, addGraphQLSubscriptions } from 'subscriptions-trans
 
 import reducers from './reducers';
 
-// const networkInterface = createNetworkInterface({ uri: 'http://192.168.1.67:3000/graphql' });
-const networkInterface = createNetworkInterface({ uri: 'http://localhost:3000/graphql' });
+const networkInterface = createNetworkInterface({ uri: 'http://192.168.1.67:3000/graphql' });
+// const networkInterface = createNetworkInterface({ uri: 'http://localhost:3000/graphql' });
 
-// const wsClient = new SubscriptionClient('ws://192.168.1.67:3000/subscriptions', {
-const wsClient = new SubscriptionClient('ws://localhost:3000/subscriptions', {
+const wsClient = new SubscriptionClient('ws://192.168.1.67:3000/subscriptions', {
+// const wsClient = new SubscriptionClient('ws://localhost:3000/subscriptions', {
   reconnect: true,
   connectionParams: {},
 });

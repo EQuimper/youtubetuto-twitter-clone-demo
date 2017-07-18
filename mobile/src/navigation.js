@@ -4,7 +4,7 @@ import { FontAwesome, SimpleLineIcons, EvilIcons } from '@expo/vector-icons';
 import { Keyboard, ActivityIndicator } from 'react-native';
 import { withApollo } from 'react-apollo';
 import { connect } from 'react-redux';
-import LoadingStatusSpinner from 'react-native-loading-status-spinner';
+import { connectActionSheet } from '@expo/react-native-action-sheet';
 
 import styled from 'styled-components/native';
 import Touchable from '@appandflow/touchable';
@@ -17,11 +17,9 @@ import LoginScreen from './screens/LoginScreen';
 import NewTweetScreen from './screens/NewTweetScreen';
 import { colors } from './utils/constants';
 import ME_QUERY from './graphql/queries/me';
-import { getUserInfo } from './actions/user';
+import { getUserInfo, logout } from './actions/user';
 
 const TAB_ICON_SIZE = 20;
-
-const Root = styled.View`flex: 1`;
 
 const Avatar = styled.Image`
   height: 30;
@@ -29,14 +27,42 @@ const Avatar = styled.Image`
   borderRadius: 15;
 `;
 
-function AvatarCp(props) {
-  if (!props.info) {
-    return <ActivityIndicator color={colors.PRIMARY} />;
+class AvatarCp extends React.Component {
+  _onOpenActionSheet = () => {
+    const options = ['Logout', 'Cancel'];
+    const destructiveButtonIndex = 0;
+    const cancelButtonIndex = 1;
+    this.props.showActionSheetWithOptions(
+      {
+        options,
+        cancelButtonIndex,
+        destructiveButtonIndex,
+      },
+      buttonIndex => {
+        if (buttonIndex === 0) {
+          this.props.client.resetStore();
+          return this.props.logout();
+        }
+      }
+    );
+  };
+  render() {
+    if (!this.props.info) {
+      return (
+        <ButtonLeft disabled>
+          <ActivityIndicator color={colors.PRIMARY} />
+        </ButtonLeft>
+      );
+    }
+    return (
+      <ButtonLeft onPress={this._onOpenActionSheet}>
+        <Avatar source={{ uri: this.props.info.avatar }} />
+      </ButtonLeft>
+    );
   }
-  return <Avatar source={{ uri: props.info.avatar }} />;
 }
 
-const AvatarState = connect(state => state.user)(AvatarCp);
+const AvatarState = withApollo(connect(state => state.user, { logout })(connectActionSheet(AvatarCp)));
 
 const ButtonRight = styled(Touchable).attrs({
   feedback: 'opacity',
@@ -158,11 +184,7 @@ const AppMainNav = StackNavigator({
           <SimpleLineIcons color={colors.PRIMARY} size={20} name="pencil" />
         </ButtonRight>
       ),
-      headerLeft: (
-        <ButtonLeft>
-          <AvatarState />
-        </ButtonLeft>
-      ),
+      headerLeft: <AvatarState />,
     }),
   },
   NewTweet: {
@@ -184,7 +206,7 @@ const AppMainNav = StackNavigator({
   }),
 });
 
-class AppNavigator extends PureComponent {
+class AppNavigator extends PureComponent { // eslint-disable-line
   componentWillMount() {
     if (this.props.isAuthenticated) {
       this._getUserInfo();
@@ -204,12 +226,7 @@ class AppNavigator extends PureComponent {
       dispatch: this.props.dispatch,
       state: this.props.nav,
     });
-    return (
-      <Root>
-        <LoadingStatusSpinner />
-        <AppMainNav navigation={nav} />
-      </Root>
-    );
+    return <AppMainNav navigation={nav} />;
   }
 }
 

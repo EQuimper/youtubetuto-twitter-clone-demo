@@ -1,105 +1,52 @@
 import React, { Component } from 'react';
 import styled from 'styled-components/native';
+import { graphql, compose } from 'react-apollo';
+import { FlatList } from 'react-native';
+import { connect } from 'react-redux';
 
-import { fakeAvatar } from '../utils/constants';
+import ProfileHeader from '../components/ProfileHeader';
+import FeedCard from '../components/FeedCard/FeedCard';
+import GET_USER_TWEETS_QUERY from '../graphql/queries/getUserTweets';
+import { getUserInfo } from '../actions/user';
 
 const Root = styled.View`
   flex: 1;
-  backgroundColor: ${props => props.theme.WHITE};
-  paddingTop: 50;
+  backgroundColor: #F1F6FA;
 `;
 
-const HeaderContainer = styled.View`
-  height: 140;
-  alignSelf: stretch;
-  borderBottomWidth: 1;
-  borderBottomColor: ${props => props.theme.LIGHT_GRAY};
-`;
+class ProfileScreen extends Component {
+  state = {}
 
-const Heading = styled.View`
-  flex: 1;
-  flexDirection: row;
-  alignItems: center;
-  justifyContent: flex-start;
-  paddingLeft: 15;
-  paddingTop: 5;
-`;
+  _renderItem = ({ item }) => <FeedCard {...item} key={item._id} />
 
-const Avatar = styled.Image`
-  height: 60;
-  width: 60;
-  borderRadius: 30;
-`;
+  _renderPlaceholder = ({ item }) => <FeedCard placeholder key={item} isLoaded={this.props.getUserTweetsQuery.loading} />
 
-const UsernameContainer = styled.View`
-  flex: 1;
-  paddingLeft: 10;
-`;
-
-const Fullname = styled.Text`
-  color: ${props => props.theme.SECONDARY};
-  fontWeight: bold;
-  fontSize: 18;
-`;
-
-const Username = styled.Text`
-  color: ${props => props.theme.SECONDARY};
-  opacity: 0.8;
-  fontSize: 15;
-`;
-
-const MetaContainer = styled.View`
-  flex: 0.8;
-  flexDirection: row;
-`;
-
-const MetaBox = styled.View`
-  flex: 1;
-  justifyContent: center;
-  alignItems: center;
-`;
-
-const MetaText = styled.Text`
-  color: ${props => props.theme.SECONDARY};
-  fontSize: 16;
-  fontWeight: 600;
-`;
-
-const MetaTextNumber = styled.Text`
-  color: ${props => props.theme.PRIMARY};
-`;
-
-export default class ProfileScreen extends Component {
-  state = { }
   render() {
+    const { getUserTweetsQuery, info } = this.props;
     return (
       <Root>
-        <HeaderContainer>
-          <Heading>
-            <Avatar source={{ uri: fakeAvatar }} />
-            <UsernameContainer>
-              <Fullname>
-                Emanuel Quimper
-              </Fullname>
-              <Username>
-                @EQuimper
-              </Username>
-            </UsernameContainer>
-          </Heading>
-          <MetaContainer>
-            <MetaBox>
-              <MetaText>
-                <MetaTextNumber>5</MetaTextNumber> tweets
-              </MetaText>
-            </MetaBox>
-            <MetaBox>
-              <MetaText>
-                <MetaTextNumber>5</MetaTextNumber> likes
-              </MetaText>
-            </MetaBox>
-          </MetaContainer>
-        </HeaderContainer>
+        <ProfileHeader {...info} />
+        {getUserTweetsQuery.loading ? (
+          <FlatList
+            contentContainerStyle={{ alignSelf: 'stretch' }}
+            data={[1, 2, 3]}
+            renderItem={this._renderPlaceholder}
+            keyExtractor={item => item}
+          />
+        ) : (
+          <FlatList
+            contentContainerStyle={{ alignSelf: 'stretch' }}
+            data={getUserTweetsQuery.getUserTweets}
+            renderItem={this._renderItem}
+            keyExtractor={item => item._id}
+          />
+        )}
       </Root>
     );
   }
 }
+
+export default compose(
+  graphql(GET_USER_TWEETS_QUERY, { name: 'getUserTweetsQuery' }),
+  connect(state => ({ info: state.user.info }))
+)(ProfileScreen);

@@ -3,6 +3,7 @@ import styled from 'styled-components/native';
 import Touchable from '@appandflow/touchable';
 
 import SignupForm from '../components/SignupForm';
+import LoginForm from '../components/LoginForm';
 
 const Root = styled.View`
   flex: 1;
@@ -85,6 +86,12 @@ export default class LoginScreen extends Component {
           <SignupForm onBackPress={this._onBackPress} />
         </Root>
       );
+    } else if (this.state.showLogin) {
+      return (
+        <Root>
+          <LoginForm onBackPress={this._onBackPress} />
+        </Root>
+      );
     }
     return (
       <Root>
@@ -92,7 +99,7 @@ export default class LoginScreen extends Component {
           <ButtonText>Get Started</ButtonText>
         </ButtonLogin>
         <BottomTextContainer>
-          <Button>
+          <Button onPress={this._onShowLoginPress}>
             <ButtonBottomText>Already have an account?</ButtonBottomText>
           </Button>
         </BottomTextContainer>

@@ -7,8 +7,8 @@ import Touchable from '@appandflow/touchable';
 import { graphql, withApollo } from 'react-apollo';
 import { connect } from 'react-redux';
 
-import { colors, fakeAvatar } from '../utils/constants';
-import SIGNUP_MUTATION from '../graphql/mutations/signup';
+import { colors } from '../utils/constants';
+import LOGIN_MUTATION from '../graphql/mutations/login';
 import ME_QUERY from '../graphql/queries/me';
 import Loading from '../components/Loading';
 import { login, getUserInfo } from '../actions/user';
@@ -91,36 +91,34 @@ const ButtonConfirmText = styled.Text`
   fontWeight: 600;
 `;
 
-class SignupForm extends Component {
+class LoginForm extends Component {
   state = {
-    fullName: '',
     email: '',
     password: '',
-    username: '',
     loading: false,
   }
   _onChangeText = (text, type) => this.setState({ [type]: text });
 
   _checkIfDisabled() {
-    const { fullName, email, password, username } = this.state;
+    const { email, password } = this.state;
 
-    if (!fullName || !email || !password || !username) {
+    if (!email || !password) {
       return true;
     }
 
     return false;
   }
 
-  _onSignupPress = async () => {
+  _onLoginpress = async () => {
     this.setState({ loading: true });
-    const { fullName, email, password, username } = this.state;
+    const { email, password } = this.state;
     const { data } = await this.props.mutate({
-      variables: { fullName, email, password, username, avatar: fakeAvatar },
+      variables: { email, password },
     });
     this.setState({ loading: false });
     try {
-      await AsyncStorage.setItem('@twitterclonedemo:token', data.signup.token);
-      this.props.login(data.signup.token);
+      await AsyncStorage.setItem('@twitterclonedemo:token', data.login.token);
+      this.props.login(data.login.token);
       const { data: { me } } = await this.props.client.query({ query: ME_QUERY });
       return this.props.getUserInfo(me);
     } catch (error) {
@@ -144,14 +142,6 @@ class SignupForm extends Component {
         <Wrapper>
           <InputWrapper>
             <Input
-              onChangeText={text => this._onChangeText(text, 'fullName')}
-              value={this.state.fullName}
-              autoCapitalize="words"
-              placeholder="Full name"
-            />
-          </InputWrapper>
-          <InputWrapper>
-            <Input
               value={this.state.email}
               keyboardType="email-address"
               placeholder="Email"
@@ -166,22 +156,15 @@ class SignupForm extends Component {
               onChangeText={text => this._onChangeText(text, 'password')}
             />
           </InputWrapper>
-          <InputWrapper>
-            <Input
-              value={this.state.username}
-              placeholder="Username"
-              onChangeText={text => this._onChangeText(text, 'username')}
-            />
-          </InputWrapper>
         </Wrapper>
-        <ButtonConfirm disabled={this._checkIfDisabled()} onPress={this._onSignupPress}>
-          <ButtonConfirmText>Sign Up</ButtonConfirmText>
+        <ButtonConfirm disabled={this._checkIfDisabled()} onPress={this._onLoginpress}>
+          <ButtonConfirmText>Log in</ButtonConfirmText>
         </ButtonConfirm>
       </Root>
     );
   }
 }
 
-const SignupWithGQL = graphql(SIGNUP_MUTATION)(SignupForm);
+const LoginWithGQL = graphql(LOGIN_MUTATION)(LoginForm);
 
-export default withApollo(connect(undefined, { login, getUserInfo })(SignupWithGQL));
+export default withApollo(connect(undefined, { login, getUserInfo })(LoginWithGQL));

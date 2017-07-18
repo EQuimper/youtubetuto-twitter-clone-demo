@@ -16,6 +16,7 @@ export default `
     last_name: String
     email: String
     avatar: String
+    tweets_number: Int
     updatedAt: String
     createdAt: String
   }
@@ -26,6 +27,7 @@ export default `
 
   type Query {
     getTweets: [Tweet]
+    getUserTweets: [Tweet]
     me: User
   }
 

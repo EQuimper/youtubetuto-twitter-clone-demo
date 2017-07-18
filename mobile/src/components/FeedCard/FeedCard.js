@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components/native';
 import { graphql } from 'react-apollo';
+import Placeholder from 'rn-placeholder';
 
 import FeedCardHeader from './FeedCardHeader';
 import FeedCardBottom from './FeedCardBottom';
@@ -18,6 +19,10 @@ const Card = styled.View`
   padding: 7px;
 `;
 
+const Wrapper = styled.View`
+  flex: 1;
+`;
+
 const CardContentContainer = styled.View`
   flex: 1;
   padding: 10px 20px 10px 0px;
@@ -32,6 +37,20 @@ const CardContentText = styled.Text`
 
 class FeedCard extends Component {
   render() {
+    if (this.props.placeholder) {
+      return (
+        <Card>
+          <Placeholder.ImageContent
+            onReady={!this.props.isLoaded}
+            lineNumber={2}
+            animate="shine"
+            lastLineWidth="40%"
+          >
+            <Wrapper />
+          </Placeholder.ImageContent>
+        </Card>
+      );
+    }
     const { text, createdAt, favorite_count, user, isFavorited } = this.props;
     return (
       <Card>

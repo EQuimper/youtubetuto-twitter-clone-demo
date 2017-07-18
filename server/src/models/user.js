@@ -15,6 +15,10 @@ const UserSchema = new Schema(
     avatar: String,
     password: String,
     email: String,
+    tweets_number: {
+      type: Number,
+      default: 0
+    }
   },
   { timestamps: true },
 );
@@ -26,6 +30,16 @@ UserSchema.pre('save', function(next) {
   }
   return next();
 });
+
+UserSchema.statics = {
+  incTweetsNumber(userId) {
+    return this.findByIdAndUpdate(
+      userId,
+      { $inc: { tweets_number: 1 } },
+      { new: true },
+    );
+  }
+}
 
 UserSchema.methods = {
   _hashPassword(password) {

@@ -16,14 +16,18 @@
     "react-apollo": "^1.4.3",
     "react-native": "https://github.com/expo/react-native/archive/sdk-18.0.1.tar.gz",
     "react-native-keyboard-aware-scroll-view": "^0.2.9",
+    "react-native-loading-status-spinner": "^1.0.1",
     "react-navigation": "^1.0.0-beta.11",
     "react-redux": "^5.0.5",
     "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0",
+    "rn-placeholder": "^1.0.1",
     "styled-components": "^2.1.1",
     "subscriptions-transport-ws": "^0.8.1"
   },
   "devDependencies": {
     "eslint": "^4.2.0",
-    "eslint-config-equimper": "^2.2.1"
+    "eslint-config-equimper": "^2.2.1",
+    "redux-devtools-extension": "^2.13.2"
   }
 }

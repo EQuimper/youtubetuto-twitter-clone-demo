@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { addNavigationHelpers, StackNavigator, TabNavigator } from 'react-navigation';
 import { FontAwesome, SimpleLineIcons, EvilIcons } from '@expo/vector-icons';
-import { Keyboard } from 'react-native';
+import { Keyboard, ActivityIndicator } from 'react-native';
+import { withApollo } from 'react-apollo';
 import { connect } from 'react-redux';
+import LoadingStatusSpinner from 'react-native-loading-status-spinner';
+
 import styled from 'styled-components/native';
 import Touchable from '@appandflow/touchable';
 
@@ -13,16 +16,27 @@ import ProfileScreen from './screens/ProfileScreen';
 import LoginScreen from './screens/LoginScreen';
 import NewTweetScreen from './screens/NewTweetScreen';
 import { colors } from './utils/constants';
+import ME_QUERY from './graphql/queries/me';
+import { getUserInfo } from './actions/user';
 
 const TAB_ICON_SIZE = 20;
 
-const Avatar = styled.Image.attrs({
-  source: { uri: 'https://pbs.twimg.com/profile_images/835144746217664515/oxBgzjRA_bigger.jpg' },
-}) `
+const Root = styled.View`flex: 1`;
+
+const Avatar = styled.Image`
   height: 30;
   width: 30;
   borderRadius: 15;
 `;
+
+function AvatarCp(props) {
+  if (props.info) {
+    return <Avatar source={{ uri: props.info.avatar }} />;
+  }
+  return <ActivityIndicator color={colors.PRIMARY} />;
+}
+
+const AvatarState = connect(state => state.user)(AvatarCp);
 
 const ButtonRight = styled(Touchable).attrs({
   feedback: 'opacity',
@@ -83,6 +97,7 @@ const Tabs = TabNavigator({
     screen: ProfileScreen,
     navigationOptions: () => ({
       headerTitle: 'My Profile',
+      header: null,
       tabBarIcon: ({ tintColor }) =>
         (<FontAwesome
           size={TAB_ICON_SIZE}
@@ -94,6 +109,7 @@ const Tabs = TabNavigator({
 }, {
   swipeEnabled: false,
   tabBarPosition: 'bottom',
+  lazy: true,
   tabBarOptions: {
     showIcon: true,
     showLabel: false,
@@ -144,7 +160,7 @@ const AppMainNav = StackNavigator({
       ),
       headerLeft: (
         <ButtonLeft>
-          <Avatar />
+          <AvatarState />
         </ButtonLeft>
       ),
     }),
@@ -169,7 +185,17 @@ const AppMainNav = StackNavigator({
 });
 
 class AppNavigator extends Component {
-  state = {}
+  componentDidMount() {
+    if (this.props.isAuthenticated) {
+      this._getUserInfo();
+    }
+  }
+
+  _getUserInfo = async () => {
+    const { data } = await this.props.client.query({ query: ME_QUERY });
+    this.props.dispatch(getUserInfo(data.me));
+  }
+
   render() {
     const nav = addNavigationHelpers({
       dispatch: this.props.dispatch,
@@ -179,14 +205,17 @@ class AppNavigator extends Component {
       return <LoginScreen />;
     }
     return (
-      <AppMainNav navigation={nav} />
+      <Root>
+        <LoadingStatusSpinner />
+        <AppMainNav navigation={nav} />
+      </Root>
     );
   }
 }
 
-export default connect(state => ({
+export default withApollo(connect(state => ({
   nav: state.nav,
   isAuthenticated: state.user.isAuthenticated,
-}))(AppNavigator);
+}))(AppNavigator));
 
 export const router = AppMainNav.router;
